@@ -512,6 +512,12 @@ INSERT INTO Proyecto VALUES ('ProductoGTP',6,'Madrid',5);
 
 Solución:
 ```sql
+select 
+P.nombre as nombre_proyecto,
+E.nombre as nombre_empleado,
+T.horas
+from Proyecto P left join trabaja_en T on P.numero=T.proyecto left join empleado E on T.empleado=E.dni
+order by nombre_proyecto , nombre_empleado
 
 ```
 
@@ -643,7 +649,12 @@ Obtener un listado con el nombre completo de los empleados que **NO** tienen nin
 
 Solución:
 ```sql
-
+select 
+E.nombre,
+E.apellido1,
+E.apellido2
+from Empleado E left join Familiar F on E.dni=F.empleado
+where F.empleado is null
 ```
 
 Tabla resultado:
@@ -813,7 +824,13 @@ Escribe una consulta que devuelva para cada departamento su nombre (nombre_depar
 Solución:
 
 ```sql
-
+select 
+D.nombre as nombre_departamento,
+Count(Distinct P.numero) as num_proyectos,
+Sum(T.horas) as total_horas_dedicadas
+from Departamento D inner join Proyecto P on D.numero=P.dpto inner join Trabaja_en T on T.proyecto=P.numero
+group by D.numero
+order by total_horas_dedicadas desc
 ```
 
 Tabla resultado:
