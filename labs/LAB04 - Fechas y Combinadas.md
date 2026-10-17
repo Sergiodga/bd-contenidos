@@ -242,7 +242,11 @@ Escribe una consulta para obtener el nombre, apellido1 y fechaNac de los emplead
 
 Solución:
 ```sql
-
+select nombre,
+apellido1,
+date(fechaNac) as fechaNac
+from empleado
+where date(fechaNac) between date('2025-01-01','-70 years') and date('2025-01-01','-59 years')
 ```
 
 Tabla resultado:
@@ -519,7 +523,15 @@ Escribe una consulta que devuelva los empleados con más de un familiar que no s
 
 Solución:
 ```sql
+select empleado
+from familiar
+group by empleado
+having count(*)>1
 
+except
+
+select director
+from departamento
 ```
 
 Tabla resultado:
@@ -649,7 +661,25 @@ Escribe una consulta que devuelva el dni de los empleados que no tienen familiar
 
 Solución:
 ```sql
-
+(
+    -- 1. DNI de empleados que no tienen familiares
+    SELECT dni 
+    FROM empleado
+    
+    EXCEPT
+    
+    SELECT empleado 
+    FROM Familiar
+)
+UNION
+(
+    -- 2. DNI de los supervisores con más de 2 empleados a su cargo
+    SELECT supervisor AS dni
+    FROM empleado
+    WHERE supervisor IS NOT NULL
+    GROUP BY supervisor
+    HAVING COUNT(*) > 2
+);
 
 ```
 
@@ -770,7 +800,16 @@ Escribe una consulta que devuelva los proyectos del departamento con mayor núme
 
 Solución:
 ```sql
-
+WITH DptoMaxEmpleados AS (
+    SELECT dpto
+    FROM EMPLEADO
+    GROUP BY dpto
+    ORDER BY COUNT(*) DESC
+    LIMIT 1
+)
+SELECT nombre, ubicacion, dpto
+FROM PROYECTO
+WHERE dpto = (SELECT dpto FROM DptoMaxEmpleados);
 ```
 
 Tabla resultado:
