@@ -452,7 +452,14 @@ Escribe una consulta que liste el el nombre y apellido de cada empleado junto co
 
 Solución:
 ```sql
-
+select
+Distinct(E.nombre) as nombre,
+(E.apellido1),
+E.sueldo- (Select AVG(sueldo)
+		   from empleado e2
+		   where e2.dpto=E.dpto) as diferenciaSueldoMedio
+From Empleado E
+order by diferenciaSueldoMedio desc
 ```
 
 Tabla resultado:
@@ -539,7 +546,15 @@ Escribe una consulta que liste el nombre de los proyectos donde trabaja al menos
 
 Solución:
 ```sql
-
+SELECT DISTINCT P.nombre
+FROM Proyecto P
+WHERE EXISTS (
+  SELECT empleado
+  FROM Trabaja_en T 
+  INNER JOIN Empleado E on T.empleado=E.dni inner join Departamento D on E.dpto=D.numero
+  where D.nombre = 'Investigación' and T.proyecto =P.numero
+)
+ORDER BY P.nombre;
 ```
 
 Tabla resultado:
@@ -628,7 +643,24 @@ SELECT nombre, apellido1, sueldo FROM EMPLEADO;
 
 Solución:
 ```sql
-
+Update Empleado
+Set sueldo=sueldo + (sueldo*0.20)
+where dni in(
+  select Empleado
+  from Trabaja_en T
+  group by Empleado
+  having SUM(horas) > (
+	select avg(total_horas)
+	from(
+	  select sum(horas) as total_horas
+	  from trabaja_en
+	  where horas is not null
+	  group by empleado
+	  )
+	)
+  );
+  
+  SELECT nombre, apellido1, sueldo FROM EMPLEADO;
 ```
 
 Tabla resultado:
@@ -759,7 +791,13 @@ Escribe una consulta que devuelva el `dni` de los empleados que no tienen ningú
 
 Solución:
 ```sql
-
+Select
+E.dni
+from Empleado E
+where E.dni not in(
+  Select
+  E2.dni
+  from empleado E2 inner join Familiar F on F.empleado=E2.dni)
 ```
 
 Tabla resultado:
@@ -817,7 +855,7 @@ WHERE P.ubicacion = 'Madrid';
 
 Solución:
 ```sql
-
+SELECT nombre, apellido1 FROM EMPLEADO WHERE dni IN ( SELECT empleado FROM TRABAJA_EN WHERE proyecto IN ( SELECT numero FROM PROYECTO WHERE ubicacion = 'Madrid' ) ) ORDER BY nombre;
 ```
 
 Tabla resultado:
