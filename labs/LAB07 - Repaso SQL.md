@@ -26,7 +26,13 @@ Escribe una consulta que muestre el nombre, apellido1 y sueldo de los empleados 
 
 Solución:
 ```sql
-
+select
+nombre,
+apellido1,
+sueldo
+from empleado
+where (sueldo between 25000 and 40000) and (nombre like 'A%' or nombre like'J%') --Primero van siempre los or y luego los and, poner parentesis y tambien fijarse en que % reemplaza a cualquier numero de caracteres y _ remplaza 1 pero el que sea
+order by sueldo desc, nombre asc 
 ```
 
 **Tabla resultado:**
@@ -52,7 +58,14 @@ Escribe una consulta que muestre, para cada departamento, el número de empleado
 
 Solución:
 ```sql
-
+select
+E.dpto,
+Count(*) as num_empleados,
+Sum(E.sueldo) as sueldo_total
+from Empleado E
+group by dpto
+Having num_empleados > 1
+order by sueldo_total desc
 ```
 
 **Tabla resultado:**
@@ -76,7 +89,15 @@ Escribe una consulta que muestre el nombre y apellido1 del empleado, el nombre d
 
 Solución:
 ```sql
-
+select
+E.nombre as nombre_empleado,
+E.apellido1,
+P.nombre as nombre_proyecto,
+D.nombre as nombre_departamento
+from Departamento D inner join Empleado E on D.numero=E.dpto inner join Trabaja_en T
+on T.empleado=E.dni inner join Proyecto P on P.numero=T.proyecto
+where E.apellido1 like 'P%'
+order by nombre_empleado
 ```
 
 **Tabla resultado:**
@@ -106,7 +127,16 @@ Ordena por número de empleados descendente.
 
 Solución:
 ```sql
-
+select distinct
+case
+	when E.sueldo<30000 then 'Junior'
+	when E.sueldo between 30000 and 45000 then 'Senior'
+	when E.sueldo > 45000 then 'Executive'
+end as categoria_salarial,
+Count(*) as num_empleados
+From Empleado E
+group by categoria_salarial
+order by num_empleados desc
 ```
 
 **Tabla resultado:**
@@ -136,7 +166,20 @@ Ordena por total de horas descendente y, luego, alfabéticamente por apellido y 
 
 Solución:
 ```sql
+With horas_empleado as(
+  Select Sum(T.horas) as total_horas,
+  T.empleado
+  from Trabaja_en T
+  group by T.empleado
+)
 
+Select distinct
+E.nombre,
+E.apellido1,
+H.total_horas
+from Empleado E inner join horas_empleado H on H.empleado=E.dni
+where H.total_horas>30
+order by total_horas desc, apellido1, nombre
 ```
 
 **Tabla resultado:**
@@ -165,7 +208,17 @@ Escribe una consulta que muestre el nombre de los departamentos que tienen al me
 
 Solución:
 ```sql
-
+select nombre as nombre_departamento
+from Departamento D
+where exists(
+  select Count(E.dni)
+  from Empleado E inner join Trabaja_en T on E.dni=T.empleado inner join Proyecto P
+  on T.proyecto=P.numero
+  where E.dpto=D.numero --Forma de correlacionar la subcomsulta con la consulta principal, tiene que coincidir el empleado con el departamento
+  group by T.empleado
+  having Count(T.proyecto) > 1
+  )
+order by nombre_departamento
 ```
 
 **Tabla resultado:**
@@ -195,7 +248,15 @@ Ordena por número de familiares descendente y luego por nombre.
 
 Solución:
 ```sql
-
+select distinct
+E.nombre,
+E.apellido1,
+Count(distinct F.nombre) as num_familiares,
+Count(distinct T.proyecto) as num_proyectos
+from Empleado E left join Familiar F on E.dni=F.empleado left join Trabaja_en T
+on E.dni=T.empleado
+group by E.dni
+order by num_familiares desc, E.nombre
 ```
 
 **Tabla resultado:**
