@@ -262,7 +262,23 @@ Escribe el texto BigER necesario para modelar los desarrolladores y los equipos,
 
 ![](../imgs/BD%20-%20BigER%20Estudio%20Videojuegos%20parte%201.png)
 
----
+``` erdiagram
+entity Desarrollador {
+    dni key
+    cuenta_bancaria unique
+    sueldo
+    especialidad
+    nombre
+    apellido_1
+    apellido_2
+}
+
+entity Equipo {
+    codigo key
+    nombre unique
+    sedes
+}
+```
 
 ### Ejercicio 03 - Enunciado ER 00A Estudio Videojuegos (2)
 
@@ -281,6 +297,22 @@ De nuevo, vamos a fijarnos solo en las entidades. Este párrafo nos da dos más:
 
 Escribe el texto BigER necesario para modelar los videojuegos y los niveles, de manera que nuestro diagrama ER tenga estas dos nuevas entidades tal y como se muestran en la siguiente imagen:
 ![](../imgs/BD%20-%20BigER%20Estudio%20Videojuegos%20parte%202.png)
+
+
+``` erdiagram
+entity Videojuego{
+    codigo key
+    titulo unique
+    argumento
+} 
+
+entity Nivel{
+    numero key
+    nombre
+    dificultad
+    duracion_estimada
+}
+```
 
 ---
 ### Ejercicio 04 - Enunciado ER 00A Estudio Videojuegos (3)
