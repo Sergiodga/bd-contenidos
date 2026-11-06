@@ -1,1 +1,17 @@
-erdiagram Model
+erdiagram EjemplosNotacionBigER
+notation=crowsfoot
+
+entity Estudiante {
+    numero_expediente key
+    dni unique
+    nombre
+    apellido_1
+    apellido_2
+}
+
+entity Coche {
+    vin key
+    matricula unique
+    modelo
+}
+

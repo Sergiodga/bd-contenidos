@@ -35,6 +35,23 @@ relationship pertenece_a {
 }
 
 relationship lidera {
-    Desarrollador [1..1]-> Equipo [0..1]
+    Desarrollador [0..1]-> Equipo [0..1]
     fecha_inicio_lider
+}
+
+relationship desarrolla {
+    Equipo [1..1]-> Videojuego [0..N]
+}
+
+relationship forma_parte_de {
+    Nivel [0..N]-> Videojuego [1..1]
+}
+
+relationship trabaja_en {
+    Desarrollador [0..N]-> Videojuego [0..N]
+    horas
+}
+
+relationship mentoriza {
+    Desarrollador [0..1 | "Mentor"]-> Desarrollador [0..N | "Mentorizado"]
 }

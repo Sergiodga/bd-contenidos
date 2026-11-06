@@ -326,6 +326,18 @@ Fíjate en que entre las mismas dos entidades hay **dos relaciones distintas**: 
 
 Escribe el texto BigER necesario para modelarlas y visualiza el resultado en el diagrama en VS Code. Antes de continuar, asegúrate de entender cómo se está representando gráficamente cada relación, y comprueba con la regla de lectura que cada cardinalidad dice lo mismo que el enunciado.
 
+``` erdiagram
+
+relationship pertenece_a {
+    Desarrollador [0..N]-> Equipo [1..1]
+}
+
+relationship lidera {
+    Desarrollador [0..1]-> Equipo [0..1]
+    fecha_inicio_lider
+}
+```
+
 ---
 ### Ejercicio 05 - Enunciado ER 00A Estudio Videojuegos (4)
 
@@ -335,6 +347,16 @@ Vamos ahora con las relaciones del tercer párrafo:
 - En segundo lugar, la relación **forma_parte_de** entre Nivel y Videojuego. Por lo que nos dice el enunciado, un Nivel forma parte de exactamente un Videojuego, mientras que un Videojuego puede no tener ningún Nivel todavía o tener muchos.
 
 Escribe el texto BigER necesario para modelarlas y visualiza el resultado en el diagrama en VS Code. Antes de continuar, asegúrate de entender cómo se está representando gráficamente cada relación.
+
+``` erdiagram
+relationship desarrolla {
+    Equipo [1..1]-> Videojuego [0..N]
+}
+
+relationship forma_parte_de {
+    Nivel [0..N]-> Videojuego [1..1]
+}
+```
 
 ---
 
@@ -353,6 +375,17 @@ Este párrafo nos da dos relaciones más:
 - La relación **mentoriza** de Desarrollador consigo mismo. Es una **relación recursiva**, así que necesita **roles**: un desarrollador actúa como "Mentor" y otro como "Mentorizado". Por lo que nos dice el enunciado, un Desarrollador tiene como mucho un Mentor, y un Mentor puede mentorizar a ninguno o a muchos Desarrolladores.
 
 Escribe el texto BigER necesario para modelarlas y visualiza el resultado en el diagrama en VS Code. Antes de continuar, asegúrate de entender cómo se está representando gráficamente cada relación.
+
+``` erdiagram
+relationship trabaja_en {
+    Desarrollador [0..N]-> Videojuego [0..N]
+    horas
+}
+
+relationship mentoriza {
+    Desarrollador [0..1 | "Mentor"]-> Desarrollador [0..N | "Mentorizado"]
+}
+```
 
 ---
 ### Fin
