@@ -14,7 +14,11 @@ entity Desarrollador {
 entity Equipo {
     codigo key
     nombre unique
-    sedes
+}
+
+weak entity Sede{
+    ciudad partial-key
+    direccion
 }
 
 entity Videojuego{
@@ -23,11 +27,15 @@ entity Videojuego{
     argumento
 }
 
-entity Nivel{
-    numero key
+weak entity Nivel{
+    numero partial-key
     nombre
     dificultad
     duracion_estimada
+}
+
+weak relationship tiene_sede {
+    Sede [1..N] -> Equipo [1..1]
 }
 
 relationship pertenece_a {
@@ -43,7 +51,7 @@ relationship desarrolla {
     Equipo [1..1]-> Videojuego [0..N]
 }
 
-relationship forma_parte_de {
+weak relationship forma_parte_de {
     Nivel [0..N]-> Videojuego [1..1]
 }
 

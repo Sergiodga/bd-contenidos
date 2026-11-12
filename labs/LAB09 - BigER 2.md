@@ -136,6 +136,122 @@ Con todo esto, en nuestro diagrama ER tendremos que:
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code.
 
+``` erdiagram
+erdiagram ModeloEstudioVideojuegos
+
+notation=crowsfoot
+
+  
+
+entity Desarrollador {
+
+    dni key
+
+    cuenta_bancaria unique
+
+    sueldo
+
+    especialidad
+
+    nombre
+
+    apellido_1
+
+    apellido_2
+
+}
+
+  
+
+entity Equipo {
+
+    codigo key
+
+    nombre unique
+
+    sedes
+
+}
+
+  
+
+entity Videojuego{
+
+    codigo key
+
+    titulo unique
+
+    argumento
+
+}
+
+  
+
+weak entity Nivel{
+
+    numero partial-key
+
+    nombre
+
+    dificultad
+
+    duracion_estimada
+
+}
+
+  
+
+relationship pertenece_a {
+
+    Desarrollador [0..N]-> Equipo [1..1]
+
+}
+
+  
+
+relationship lidera {
+
+    Desarrollador [0..1]-> Equipo [0..1]
+
+    fecha_inicio_lider
+
+}
+
+  
+
+relationship desarrolla {
+
+    Equipo [1..1]-> Videojuego [0..N]
+
+}
+
+  
+
+weak relationship forma_parte_de {
+
+    Nivel [0..N]-> Videojuego [1..1]
+
+}
+
+  
+
+relationship trabaja_en {
+
+    Desarrollador [0..N]-> Videojuego [0..N]
+
+    horas
+
+}
+
+  
+
+relationship mentoriza {
+
+    Desarrollador [0..1 | "Mentor"]-> Desarrollador [0..N | "Mentorizado"]
+
+}
+```
+
 ---
 ### Ejercicio 02 - Enunciado ER 00A Estudio Videojuegos (7)
 
@@ -162,6 +278,16 @@ Con todo esto, en nuestro diagrama ER tendremos que:
 3.- Añadir la **relación débil** **tiene_sede** entre Equipo y Sede. Dado que es una relación débil, la única duda a resolver para fijar la cardinalidad es si puede haber en nuestra BD algún Equipo sin ninguna Sede, y el enunciado nos dice que no: todo equipo trabaja desde **al menos una** sede.
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Compáralo con la primera versión, que conservas en ModeloEstudioVideojuegos.erd: es exactamente la evolución que vimos en clase
+
+``` erdiagram
+weak entity Sede{
+    ciudad partial-key
+    direccion
+}
+weak relationship tiene_sede {
+    Sede [1..N] -> Equipo [1..1]
+}
+```
 
 ---
 ## Resolución del Enunciado ER 02 The Expanse Simplificado
@@ -192,6 +318,26 @@ Con esta información ya podemos modelar las dos primeras entidades mencionadas,
 
 ![](../imgs/BD%20-%20BigER%20Enunciado%202%20ER%20The%20Expanse%20v1%20simplificado%20Lab09%20parte%201.png)
 
+
+``` erdiagram
+erdiagram ModeloTheExpanseV1Simplificado
+notation=crowsfoot
+
+entity Planeta{
+    codigo key
+    nombre
+    numero_lunas
+    rotacion_horas
+    orbita_dias
+}
+
+entity Centro{
+    codigo key
+    nombre
+    coordenadas
+    fecha_creacion
+}
+```
 
 ---
 
@@ -228,6 +374,20 @@ Escribe el texto BigER necesario para modelarlas de manera que nuestro diagrama 
 
 ![](../imgs/BD%20-%20BigER%20Enunciado%202%20ER%20The%20Expanse%20v1%20simplificado%20Lab09%20parte%202.png)
 
+``` erdiagram
+entity Mineral{
+    codigo key
+    nombre
+    descripcion
+}
+
+entity Nave_Espacial{
+    matricula key
+    modelo
+    capacidad
+}
+```
+
 ---
 ### Ejercicio 05 - Enunciado ER 02 The Expanse Simplificado  (3)
 
@@ -238,6 +398,25 @@ Vamos a modelar entre las entidades que tenemos hasta ahora alguna de las relaci
 	- Por último, vamos a modelar la relación **asignada_a** entre Nave_Espacial y Planeta. Por lo que nos dice el enunciado, una instancia de Nave_Espacial solo puede estar asociada a un planeta mientras que una instancia de Planeta puede no tener ninguna Nave_Espacial o tener muchas.
 
 Escribe el texto BigER necesario para modelarlas y visualiza el resultado en el diagrama en VS Code. Antes de continuar asegúrate de estar entendiendo cómo se está representando gráficamente cada relación.
+
+``` erdiagram
+relationship ubicado_en {
+    Centro[1..N] -> Planeta[1..1]
+} 
+
+relationship es_principal_en {
+    Centro[1..1] -> Planeta[0..1]
+} 
+
+relationship encontrado_por{
+    Mineral[0..N] -> Centro[0..N]
+    fecha_hallazgo
+} 
+
+relationship asignada_a{
+    Nave_Espacial[0..N] -> Planeta[1..1]
+}
+```
 
 ---
 ### Ejercicio 06 - Enunciado ER 02 The Expanse Simplificado  (4)
@@ -260,6 +439,28 @@ Con todo esto, en nuestro diagrama ER tendremos que:
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Antes de continuar asegúrate de estar entendiendo cómo se está representando gráficamente todo.
 
+``` erdiagram
+weak entity Vuelo{
+
+    fecha_inicio partial-key
+
+    hora_inicio partial-key
+
+    fecha_fin
+
+    hora_fin
+
+}
+
+  
+
+weak relationship realizado_por{
+
+    Vuelo[0..N] -> Nave_Espacial[1..1]
+
+}
+```
+
 ---
 
 ### Ejercicio 07 - Enunciado ER 02 The Expanse Simplificado  (5)
@@ -269,6 +470,22 @@ Ahora que tenemos la entidad débil Vuelo, podemos acabar de modelar el resto de
 	- En segundo lugar, vamos a modelar la relación **destino_de** entre Vuelo y Centro. Por lo que nos dice el enunciado, podemos entender que puede haber todavía algún Centro que no haya sido destino de ningún Vuelo, pero un Vuelo siempre debe tener un Centro de Destino (vamos a suponer que un Vuelo no tiene ningún incidente que le haya impedido alcanzar su destino).
 
 Escribe el texto BigER necesario para modelarlas y visualiza el resultado en el diagrama en VS Code. Antes de continuar asegúrate de estar entendiendo cómo se está representando gráficamente cada relación.
+
+``` erdiagram
+relationship origen_de{
+
+    Vuelo[0..N] -> Centro[1..1]
+
+}
+
+  
+
+relationship destino_de{
+
+    Vuelo[0..N] -> Centro[1..1]
+
+}
+```
 
 ---
 
@@ -290,6 +507,24 @@ Con todo esto, en nuestro diagrama ER tendremos que:
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Antes de continuar asegúrate de estar entendiendo cómo se está representando gráficamente todo.
 
+``` erdiagram
+weak entity Cargamento{
+
+    codigo partial-key
+
+    fecha_empaquetado
+
+}
+
+  
+
+weak relationship empaquetado_en{
+
+    Cargamento[0..N] -> Centro[1..1]
+
+}
+```
+
 ---
 ### Ejercicio 09 - Enunciado ER 02 The Expanse Simplificado  (7)
 
@@ -298,6 +533,24 @@ Ahora que tenemos la entidad débil Cargamento, podemos acabar de modelar el res
 	- En segundo lugar, vamos a modelar la relación **transportado_en** entre Cargamento y Vuelo. Por lo que nos dice el enunciado, puede que haya cargamentos que todavía no hayan sido transportados pero los vuelos, al menos, transportarán un cargamento cada vez que se producen.
 
 Escribe el texto BigER necesario para modelarlas y visualiza el resultado en el diagrama en VS Code. Antes de continuar asegúrate de estar entendiendo cómo se está representando gráficamente cada relación.
+
+``` erdiagram
+relationship forma_parte_de{
+
+    Cargamento[0..N] -> Mineral[1..1]
+
+    cantidad
+
+}
+
+  
+
+relationship transportado_en{
+
+    Cargamento[1..N] -> Vuelo[0..1]
+
+}
+```
 
 ---
 ### Ejercicio 10 - Enunciado ER 02 The Expanse Simplificado (8)
@@ -332,6 +585,21 @@ Con todo esto, en nuestro diagrama ER tendremos que:
 3.- Añadir la **relación débil** **incluido_en** entre Historico_Extraccion y Mineral. Dado que es una relación débil, la única duda a resolver para fijar la cardinalidad es si puede haber en nuestra BD algún Mineral que todavía no haya estado incluido en ninguna extracción de ningún Centro y tiene sentido que sí.
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Antes de continuar asegúrate de estar entendiendo cómo se está representando gráficamente todo.
+
+``` erdiagram
+weak entity Historico_Extraccion{
+    fecha partial-key
+    cantidad
+}
+
+weak relationship extraido_por{
+    Historico_Extraccion[0..N] -> Centro[1..1]
+}
+
+weak relationship incluido_en{
+    Historico_Extraccion[0..N] -> Mineral[1..1]
+}
+```
 
 ---
 ### Fin
