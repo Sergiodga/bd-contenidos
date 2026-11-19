@@ -605,6 +605,72 @@ Fíjate en que la etapa actual y las etapas completadas son dos relaciones disti
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Antes de continuar, asegúrate de entender cómo se está representando gráficamente todo.
 
+```
+erdiagram ModeloNavesNoTripuladasOPA
+
+notation=crowsfoot
+
+  
+
+entity Nave{
+
+    codigo_nave key
+
+    nombre
+
+    peso
+
+    longitud
+
+    anchura
+
+    velocidad_teorica
+
+    capacidad_prevista
+
+}
+
+  
+
+entity Etapa_Desarrollo{
+
+    codigo_etapa key
+
+    nombre_etapa
+
+}
+
+  
+
+relationship en_etapa_actual{
+
+    Nave[0..N] -> Etapa_Desarrollo[1..1]
+
+    fecha_desde
+
+}
+
+  
+
+relationship completada_por{
+
+    Nave[0..N] -> Etapa_Desarrollo[0..N]
+
+    fecha_inicio
+
+    fecha_fin
+
+}
+
+  
+
+relationship evoluciona_de{
+
+    Nave[0..1 | "Original"] -> Nave[0..N | "Derivado"]
+
+}
+```
+
 ---
 ### Ejercicio 09 - Enunciado ER 07 Naves no tripuladas de la OPA (2)
 
