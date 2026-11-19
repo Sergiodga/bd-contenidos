@@ -38,3 +38,107 @@ entity Empleado{
     apellido_2
     categoria_profesional
 }
+
+hierarchy por_tipo_empleado Empleado partial disjoint
+
+entity Ingeniero_Aeroespacial extends por_tipo_empleado {
+    numero_empleado key
+}
+
+relationship responsable_de{
+    Ingeniero_Aeroespacial[1..1] -> Nave[1..1]
+}
+
+entity Ingeniero_Software extends por_tipo_empleado {
+    numero_empleado key
+}
+
+relationship asignado_a{
+    Ingeniero_Software[1..N] -> Nave[1..1]
+    fecha_desde
+}
+
+weak entity Asignacion_Historica{
+    fecha_inicio partial-key
+    fecha_fin
+}
+
+weak relationship es_de{
+    Asignacion_Historica[0..N] -> Ingeniero_Software[1..1]
+}
+
+relationship ha_tenido{
+    Asignacion_Historica[0..N] -> Nave[1..1]
+}
+
+entity Prototipo{
+    numero_serie key
+    numero_transpondedor unique
+    fecha_fabricacion
+}
+
+entity Prueba{
+    numero_prueba key
+    tipo
+    fecha
+    hora
+    duracion
+    informe
+}
+
+relationship es_prototipo_de{
+    Prototipo[0..N] -> Nave[1..1]
+}
+
+relationship utiliza{
+    Prototipo[1..1] -> Prueba[0..N]
+}
+
+relationship supervisada_por{
+    Prueba[0..N] -> Empleado[1..1]
+}
+
+hierarchy por_tipo_prueba Prueba partial
+
+entity Prueba_Extraplanetaria extends por_tipo_prueba{
+    numero_prueba key
+    kilometros_recorridos
+    consumo_combustible
+}
+
+entity Astronauta_Probador extends por_tipo_empleado{
+    numero_empleado key
+}
+
+relationship es_controlada_por{
+    Prueba_Extraplanetaria[1..N] -> Astronauta_Probador[1..1]
+}
+
+weak entity Incidencia{
+    numero_incidencia partial-key
+    descripcion
+    fecha
+    hora
+    grado_gravedad
+}
+
+weak relationship sufre{
+    Incidencia[0..N] -> Prueba[1..1]
+}
+
+weak entity Revision{
+    fecha_revision partial-key
+    informe
+}
+
+weak relationship pasa{
+    Revision[0..N] -> Prototipo[1..1]
+}
+
+relationship realizada_por{
+    Revision[0..N] -> Empleado[1..N]
+}
+
+relationship debida_a{
+    Incidencia[0..N] -> Revision[0..N]
+}

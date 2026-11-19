@@ -696,6 +696,42 @@ Después, nos dicen que cada nave tiene un ingeniero aeroespacial responsable. E
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Antes de continuar, asegúrate de entender cómo se está representando gráficamente todo.
 
+```
+entity Empleado{
+
+    numero_empleado key
+
+    nombre
+
+    apellido_1
+
+    apellido_2
+
+    categoria_profesional
+
+}
+
+  
+
+hierarchy por_tipo_empleado Empleado partial
+
+  
+
+entity Ingeniero_Aeroespacial extends por_tipo_empleado {
+
+    numero_empleado key
+
+}
+
+  
+
+relationship responsable_de{
+
+    Ingeniero_Aeroespacial[1..1] -> Nave[1..1]
+
+}
+```
+
 ---
 ### Ejercicio 10 - Enunciado ER 07 Naves no tripuladas de la OPA (3)
 
@@ -725,6 +761,50 @@ La pregunta clave es: ¿de qué entidad o entidades depende Asignacion_Historica
 Fíjate en que, igual que en el ejemplo de la Asignación Departamental de Empleados del Tema 5, mantenemos la relación con la asignación actual aunque podría deducirse del histórico: así el histórico solo guarda asignaciones terminadas, y no tendremos fechas de fin vacías en todas las asignaciones en curso.
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Antes de continuar, asegúrate de entender cómo se está representando gráficamente todo.
+
+```
+entity Ingeniero_Software extends por_tipo_empleado {
+
+    numero_empleado key
+
+}
+
+  
+
+relationship asignado_a{
+
+    Ingeniero_Software[1..N] -> Nave[1..1]
+
+    fecha_desde
+
+}
+
+  
+
+weak entity Asignacion_Historica{
+
+    fecha_inicio partial-key
+
+    fecha_fin
+
+}
+
+  
+
+weak relationship es_de{
+
+    Asignacion_Historica[0..N] -> Ingeniero_Software[1..1]
+
+}
+
+  
+
+relationship ha_tenido{
+
+    Asignacion_Historica[0..N] -> Nave[1..1]
+
+}
+```
 
 ---
 ### Ejercicio 11 - Enunciado ER 07 Naves no tripuladas de la OPA (4)
