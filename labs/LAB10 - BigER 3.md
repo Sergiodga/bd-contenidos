@@ -201,6 +201,38 @@ A continuación, escribe la primera jerarquía de Persona_UEX, cuyas subclases s
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Antes de continuar, asegúrate de entender cómo se está representando gráficamente todo.
 
+``` erdiagram
+erdiagram ModeloEERUniversidad
+
+notation=crowsfoot
+
+entity Persona_UEX {
+
+    nif key
+
+}
+
+  
+
+hierarchy por_tipo_relacion Persona_UEX total overlapping
+
+  
+
+entity Estudiante extends por_tipo_relacion {
+
+    nif key
+
+}
+
+  
+
+entity Empleado extends por_tipo_relacion {
+
+    nif key
+
+}
+```
+
 ---
 ### Ejercicio 02 - Jerarquías (2)
 
@@ -223,6 +255,26 @@ A continuación, escribe la jerarquía `por_tipo_docente` para la especializaci�
 Fíjate en que es una jerarquía **multinivel**: `Docente` es subclase de `Empleado`, que a su vez es subclase de `Persona_UEX`.
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Antes de continuar, asegúrate de entender cómo se está representando gráficamente todo.
+
+```
+hierarchy por_tipo_docente Docente partial disjoint
+
+  
+
+entity Catedratico extends por_tipo_docente {
+
+    nif key
+
+}
+
+  
+
+entity Titular extends por_tipo_docente {
+
+    nif key
+
+}
+```
 
 ---
 
@@ -260,6 +312,34 @@ Fíjate en que `Estudiante_Politecnica` tiene **dos jerarquías** distintas, cad
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Antes de continuar, asegúrate de entender cómo se está representando gráficamente todo.
 
+``` erdiadram
+hierarchy por_titulacion Estudiante_Politecnica partial overlapping
+
+  
+
+entity Estudiante_Informatica extends por_titulacion {
+
+    nif key
+
+}
+
+  
+
+entity Estudiante_Civil extends por_titulacion {
+
+    nif key
+
+}
+
+  
+
+entity Estudiante_Edificacion extends por_titulacion {
+
+    nif key
+
+}
+```
+
 ---
 
 ## Resolución del Enunciado ER 04 The Expanse Completo
@@ -296,6 +376,32 @@ Tenemos que modelar también las relaciones contenidas en el párrafo:
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Antes de continuar, asegúrate de entender cómo se está representando gráficamente todo.
 
+``` erdiagram
+entity Clase_Mineral{
+
+    codigo key
+
+    nombre
+
+}
+
+  
+
+relationship agrupa_a{
+
+    Clase_Mineral[1..1] -> Mineral[1..N]
+
+}
+
+  
+
+relationship relacionado_con{
+
+    Mineral[0..N | "Mineral_A"] -> Mineral[0..N | "Mineral_B"]
+
+}
+```
+
 ---
 ### Ejercicio 06 - Enunciado ER 04 The Expanse Completo  (3)
 
@@ -329,6 +435,38 @@ Por tanto, debemos modificar el diagrama para:
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Antes de continuar, asegúrate de entender cómo se está representando gráficamente todo.
 
+``` erdiagram
+entity Vehiculo{
+
+    matricula key
+
+    modelo
+
+}
+
+  
+
+hierarchy por_tipo_vehiculo Vehiculo partial
+
+  
+
+entity Nave_Espacial extends por_tipo_vehiculo {
+
+    matricula key
+
+    capacidad
+
+}
+
+  
+
+relationship asignado_a{
+
+    Vehiculo[0..N] -> Planeta[1..1]
+
+}
+```
+
 ---
 
 ### Ejercicio 07 - Enunciado ER 04 The Expanse Completo  (4)
@@ -359,6 +497,68 @@ Las dos subclases solo se distinguen del resto del Personal por sus relaciones:
 - **Astronauta**, con la relación **pilota** con Vuelo. Por lo que nos dice el enunciado, un Vuelo puede tener varios astronautas pilotándolo, y siempre tendrá al menos uno, mientras que un Astronauta puede no haber pilotado todavía ningún vuelo.
 
 Escribe el texto BigER necesario para modelar todo esto y visualiza el resultado en el diagrama en VS Code. Antes de continuar, asegúrate de entender cómo se está representando gráficamente todo.
+
+``` erdiagram
+entity Personal{
+
+    numero_personal key
+
+    pasaporte unique
+
+    nombre_completo
+
+    fecha_alta
+
+    puesto
+
+}
+
+  
+
+relationship trabaja_en{
+
+    Personal[1..N] -> Centro[1..1]
+
+}
+
+  
+
+hierarchy por_tipo_personal Personal partial disjoint
+
+  
+
+entity Astronauta extends por_tipo_personal {
+
+    numero_personal key
+
+}
+
+  
+
+entity Directivo extends por_tipo_personal {
+
+    numero_personal key
+
+}
+
+  
+
+relationship coordina{
+
+    Directivo[1..1] -> Centro[0..1]
+
+    fecha_inicio
+
+}
+
+  
+
+relationship pilota{
+
+    Astronauta[1..N] -> Vuelo[0..N]
+
+}
+```
 
 ---
 
